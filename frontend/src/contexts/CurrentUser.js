@@ -10,7 +10,9 @@ function CurrentUserProvider({ children }) {
       let response = await fetch(
         "http://localhost:3030/authentication/profile",
         {
-          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
       );
       let user = await response.json();

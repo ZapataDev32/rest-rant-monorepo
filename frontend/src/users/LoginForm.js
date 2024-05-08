@@ -15,10 +15,8 @@ function LoginForm() {
   const [errorMessage, setErrorMessage] = useState(null);
 
   async function handleSubmit(e) {
-    e.preventDefault();
     const response = await fetch(`http://localhost:3030/authentication/`, {
       method: "POST",
-      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -26,9 +24,10 @@ function LoginForm() {
     });
 
     const data = await response.json();
-    console.log(data);
+
     if (response.status === 200) {
       setCurrentUser(data.user);
+      localStorage.setItem("token", data.token);
       history.push(`/`);
     } else {
       setErrorMessage(data.message);
