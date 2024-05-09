@@ -13,10 +13,14 @@ function NewCommentForm({ place, onSubmit }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(`http://localhost:3030/users`);
-      const users = await response.json();
-      setComment({ ...comment, authorId: users[0]?.userId });
-      setAuthors(users);
+      try {
+        const response = await fetch(`http://localhost:3030/users`);
+        const users = await response.json();
+        setComment({ ...comment, authorId: users[0]?.userId });
+        setAuthors(users);
+      } catch (error) {
+        console.error("error fetching users", error);
+      }
     };
     fetchData();
   }, []);
@@ -59,7 +63,7 @@ function NewCommentForm({ place, onSubmit }) {
       </div>
       <div className="row">
         <div className="form-group col-sm-4">
-          <label htmlFor="state">Author</label>
+          {/* <label htmlFor="state">Author</label>
           <select
             className="form-control"
             value={comment.authorId}
@@ -68,7 +72,7 @@ function NewCommentForm({ place, onSubmit }) {
             }
           >
             {authorOptions}
-          </select>
+          </select> */}
         </div>
         <div className="form-group col-sm-4">
           <label htmlFor="stars">Star Rating</label>
