@@ -100,6 +100,22 @@ router.post("/:placeId/comments", async (req, res) => {
       .status(404)
       .json({ message: `Could not find place with id "${placeId}"` });
   }
+  if (!req.currentUser) {
+    return res
+      .status(404)
+      .json({ message: "You must be logged in to leave a rant or rave." });
+  }
+
+  // const comment = await Comment.create({
+  //   ...req.body,
+  //   authorId: req.currentUser.userId,
+  //   placeId: placeId,
+  // });
+
+  // res.send({
+  //   ...comment.toJSON(),
+  //   author: req.currentUser,
+  // });
 
   // const author = await User.findOne({
   //   where: { userId: req.body.authorId },
@@ -135,13 +151,13 @@ router.post("/:placeId/comments", async (req, res) => {
 
   const comment = await Comment.create({
     ...req.body,
-    authorId: currentUser.userId,
+    authorId: req.currentUser.userId,
     placeId: placeId,
   });
 
   res.send({
     ...comment.toJSON(),
-    author: currentUser,
+    author: req.currentUser,
   });
 });
 
@@ -160,6 +176,10 @@ router.delete("/:placeId/comments/:commentId", async (req, res) => {
     if (!comment) {
       res.status(404).json({
         message: `Could not find comment with id "${commentId}" for place with id "${placeId}"`,
+      });
+    } else if (comment.authorId !== req.currentUser?.userId) {
+      res.status(403).json({
+        message: `You do not habe permission to delete comment "${comment.commentId}"`,
       });
     } else {
       await comment.destroy();

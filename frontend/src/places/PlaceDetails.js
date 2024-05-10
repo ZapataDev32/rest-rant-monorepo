@@ -34,11 +34,24 @@ function PlaceDetails() {
     history.push("/places");
   }
 
+  // async function deleteComment(deletedComment) {
+  //   await fetch(
+  //     `http://localhost:3030/places/${place.placeId}/comments/${deletedComment.commentId}`,
+  //     {
+  //       method: "DELETE",
+  //     }
+  //   );
+
   async function deleteComment(deletedComment) {
     await fetch(
       `http://localhost:3030/places/${place.placeId}/comments/${deletedComment.commentId}`,
       {
-        method: "DELETE",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(deleteComment),
       }
     );
 
@@ -56,7 +69,7 @@ function PlaceDetails() {
       {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(commentAttributes),
